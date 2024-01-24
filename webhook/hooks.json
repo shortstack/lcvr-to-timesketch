@@ -1,0 +1,25 @@
+[
+    {
+      "id": "kick-off-timesketch",
+      "execute-command": "/opt/lcvr-to-timesketch/bash/run.sh",
+      "command-working-directory": "/opt/lcvr-to-timesketch/bash",
+      "pass-environment-to-command": [
+        {
+          "envname": "OID",
+          "source": "payload",
+          "name": "routing.oid"
+        },
+        {
+          "envname": "PAYLOAD_ID",
+          "source": "payload",
+          "name": "routing.log_id"
+        },
+        {
+          "envname": "SID",
+          "source": "payload",
+          "name": "event.source"
+        }
+      ]
+    }
+  ]
+  

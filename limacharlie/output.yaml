@@ -1,0 +1,7 @@
+version: 3
+outputs:
+    artifacts-tailored:
+        dest_host: http://WEBHOOK_IP:WEBHOOK_PORT/hooks/kick-off-timesketch
+        module: webhook
+        name: artifacts-tailored
+        type: tailored

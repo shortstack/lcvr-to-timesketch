@@ -1,0 +1,26 @@
+version: 3
+hives:
+    dr-general:
+        artifacts-to-output:
+            data:
+                detect:
+                    op: is
+                    path: routing/log_type
+                    target: artifact_event
+                    value: velociraptor
+                respond:
+                    - action: output
+                      name: artifacts-tailored
+                      suppression:
+                        is_global: false
+                        keys:
+                            - '{{ .event.original_path }}'
+                            - '{{ .routing.log_id }}'
+                        max_count: 1
+                        period: 1m
+                    - action: report
+                      name: VR artifact ingested
+            usr_mtd:
+                enabled: true
+                expiry: 0
+                tags: []

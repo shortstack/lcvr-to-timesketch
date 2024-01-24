@@ -1,0 +1,23 @@
+[Unit]
+Description=LCVR Webhook
+
+[Service]
+Type=simple
+User=root
+Restart=always
+RestartSec=10
+WorkingDirectory=/opt/lcvr-to-timesketch/webhook
+ExecStart=/usr/bin/webhook --hooks /opt/lcvr-to-timesketch/webhook/hooks.json -verbose
+ExecStop=/usr/bin/kill -9 $MAINPID
+StandardOutput=journal
+StandardError=journal
+Environment="TIMESKETCH_PW="
+Environment="TIMESKETCH_USER="
+Environment="LC_API_KEY="
+Environment="LC_UID="
+Environment="SLACK_WEBHOOK_URL="
+Environment="SLACK_NOTIFICATIONS=no"
+Environment="WEBHOOK_IP="
+
+[Install]
+WantedBy=multi-user.target
