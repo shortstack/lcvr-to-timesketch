@@ -71,24 +71,43 @@ Pipeline to process LimaCharlie Velociraptor Triages in Timesketch
     > **Note**  
     > **I strongly recommend deploying your webhooks with HTTPS.** If you wish to deploy your webhook with HTTPS, additional instructions are provided [here](https://github.com/adnanh/webhook?tab=readme-ov-file#using-https). For this proof of concept, we're using HTTP. Modify your configs to reflect HTTPS if you deploy for production use. 
 * Add the `artifacts-tailored` tailored output in LimaCharlie - `limacharlie/output.yaml` - ensure `WEBHOOK_IP` and `WEBHOOK_PORT` have been updated to reflect your external IP and port
+    * You can add these in the respective GUI locations, or via Infrastructure as Code
+        * Infrastructure as Code [via Python CLI](https://github.com/refractionPOINT/python-limacharlie?tab=readme-ov-file#configs-1)
+            ```bash
+            limacharlie configs push --oid $OID --config /path/to/lcvr-to-timesketch/limacharlie/output.yaml --outputs
+            ```
+        * Infrastructure as Code via GUI
+        ![](<./screenshots/Screenshot 2024-01-25 at 12.59.36 PM.png>)
+        * GUI locations
+        ![](<./screenshots/Screenshot 2024-01-19 at 3.42.00 PM.png>)
 
-    ![](<./screenshots/Screenshot 2024-01-19 at 3.42.00 PM.png>)
 * Add the `artifacts-to-output` D&R rule in LimaCharlie - `limacharlie/rules.yaml`
+    * You can add these in the respective GUI locations, or via Infrastructure as Code
+        * Infrastructure as Code [via Python CLI](https://github.com/refractionPOINT/python-limacharlie?tab=readme-ov-file#configs-1)
+            ```bash
+            limacharlie configs push --oid $OID --config /path/to/lcvr-to-timesketch/limacharlie/rules.yaml --hive-dr-general
+            ```
+        * Infrastructure as Code via GUI
+        ![](<./screenshots/Screenshot 2024-01-25 at 12.59.36 PM.png>)
+        * GUI locations
+        ![](<./screenshots/Screenshot 2024-01-19 at 3.41.26 PM.png>)
 
-    ![](<./screenshots/Screenshot 2024-01-19 at 3.41.26 PM.png>)
 * Kick off `Windows.KapeFiles.Targets` artifact collection in the LimaCharlie Velociraptor extension. 
   * Argument options:
     * `EventLogs=Y` - quicker processing time for proof of concept
     * `KapeTriage=Y` - typically takes much longer 
 
   ![](<./screenshots/Screenshot 2024-01-22 at 2.57.34 PM.png>)
+
 * You can watch the `Live Feed` for your `ext-velociraptor` adapter to see incoming activity -- you will see `velociraptor_collection` events come in when triage artifacts have completed and will soon be sent to your webhook output for processing
 
     ![](<./screenshots/Screenshot 2024-01-19 at 3.59.28 PM.png>)
+
 * You can see the data being sent through your output by clicking `View Samples` on the outputs screen
     * This JSON is what is being sent to your webhook, and you can see what parts of it we are using in the `webhook/hooks.json` file
 
     ![](<./screenshots/Screenshot 2024-01-19 at 4.00.43 PM.png>)
+
 * If there are any errors sending data to your webhook, you will see them under `Platform Logs` -> `Error`
 * If you have Slack notifications enabled in the webhook service, you will get progress updates in Slack
 * Plaso files tend to take a while to generate--once the plaso file has been generated, it will begin importing into Timesketch. You will be able to see the import progress in the Timesketch GUI.
