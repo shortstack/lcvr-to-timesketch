@@ -6,7 +6,7 @@ fi
 
 ADMIN=$TIMESKETCH_USER
 PW=$TIMESKETCH_PW
-ZIP=$(python3 /opt/lcvr-to-timesketch/python/get_artifact.py $OID $SID $PAYLOAD_ID)
+ZIP=$(python3 /opt/lcvr-to-timesketch/python/get_artifact.py $OID $SID $PAYLOAD_ID "triage")
 PARENT_DATA_DIR="/opt/timesketch/upload"
 
 if [[ $SLACK_NOTIFICATIONS == "yes" ]]; then

@@ -1,7 +1,17 @@
 version: 3
 outputs:
-    artifacts-tailored:
-        dest_host: http://WEBHOOK_IP:WEBHOOK_PORT/hooks/kick-off-timesketch
+    vr-artifacts-tailored:
+        dest_host: http://WEBHOOK_IP:WEBHOOK_PORT/hooks/triage-to-timesketch
         module: webhook
-        name: artifacts-tailored
+        name: vr-artifacts-tailored
+        type: tailored
+    hayabusa-artifacts-tailored:
+        dest_host: http://WEBHOOK_IP:WEBHOOK_PORT/hooks/hayabusa-to-timesketch
+        module: webhook
+        name: hayabusa-artifacts-tailored
+        type: tailored
+    plaso-artifacts-tailored:
+        dest_host: http://WEBHOOK_IP:WEBHOOK_PORT/hooks/plaso-to-timesketch
+        module: webhook
+        name: plaso-artifacts-tailored
         type: tailored

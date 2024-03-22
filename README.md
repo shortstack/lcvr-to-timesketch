@@ -1,5 +1,18 @@
 # lcvr-to-timesketch
-Pipeline to process LimaCharlie Velociraptor Triages in Timesketch
+Pipeline to process a handful of IR timeline use cases:
+* LimaCharlie Velociraptor triage artifacts into Timesketch
+    * Velociraptor artifacts trigger a webhook on your Timesketch server
+    * Generating plaso files is done on your Timesketch server and subsequent plaso file is imported into your Timesketch server
+* LimaCharlie Hayabusa timeline artifacts into Timesketch
+    * Velociraptor triage artifacts OR .evtx files trigger the [`ext-hayabusa` extension](https://beta.app.limacharlie.io/add-ons/extension-detail/ext-hayabusa) in LimaCharlie to generate a CSV timeline 
+    * CSV timeline artifact triggers a webhook on your Timesketch server
+    * CSV timeline is imported into your Timesketch server
+    * If you are using this option, you don't have to add or enable the `vr-to-output` D&R rule, or add the Plaso rules/outputs
+* LimaCharlie Plaso timeline artifacts into Timesketch
+    * Velociraptor triage artifacts OR .evtx files trigger the `ext-plaso` extension (coming soon) in LimaCharlie to generate a plaso timeline 
+    * Plaso timeline artifact triggers a webhook on your Timesketch server
+    * Plaso timeline is imported into your Timesketch server
+    * If you are using this option, you don't have to add or enable the `vr-to-output` D&R rule, or add the Hayabusa rules/outputs
 
 ## Ubuntu Deployment Steps
 * Deploy Docker - [Deployment Directions](https://docs.docker.com/engine/install/ubuntu/)
@@ -58,7 +71,7 @@ Pipeline to process LimaCharlie Velociraptor Triages in Timesketch
     sudo docker exec timesketch-worker bash -c "pip3 install timesketch-import-client"
 
     # Fix permissions
-    chmod +x /opt/lcvr-to-timesketch/bash/run.sh
+    chmod +x /opt/lcvr-to-timesketch/bash/*.sh
 
     # Make sure Plaso dir exists
     mkdir -p /opt/timesketch/upload/plaso
@@ -70,32 +83,32 @@ Pipeline to process LimaCharlie Velociraptor Triages in Timesketch
     ```
     > **Note**  
     > **I strongly recommend deploying your webhooks with HTTPS.** If you wish to deploy your webhook with HTTPS, additional instructions are provided [here](https://github.com/adnanh/webhook?tab=readme-ov-file#using-https). For this proof of concept, we're using HTTP. Modify your configs to reflect HTTPS if you deploy for production use. 
-* Add the `artifacts-tailored` tailored output in LimaCharlie - `limacharlie/output.yaml` - ensure `WEBHOOK_IP` and `WEBHOOK_PORT` have been updated to reflect your external IP and port
+* Add the tailored outputs in LimaCharlie - `limacharlie/output.yaml` - ensure `WEBHOOK_IP` and `WEBHOOK_PORT` have been updated to reflect your external IP and port
     * You can add these in the respective GUI locations, or via Infrastructure as Code
         * Infrastructure as Code [via Python CLI](https://github.com/refractionPOINT/python-limacharlie?tab=readme-ov-file#configs-1)
             ```bash
             limacharlie configs push --oid $OID --config /path/to/lcvr-to-timesketch/limacharlie/output.yaml --outputs
             ```
         * Infrastructure as Code via GUI
-        ![](<./screenshots/Screenshot 2024-01-25 at 12.59.36 PM.png>)
-        * GUI locations
-        ![](<./screenshots/Screenshot 2024-01-19 at 3.42.00 PM.png>)
+        ![](<./screenshots/Screenshot 2024-03-06 at 10.11.22 AM.png>)
+        * GUI location-- Outputs
+        ![](<./screenshots/Screenshot 2024-03-06 at 10.15.02 AM.png>)
 
-* Add the `artifacts-to-output` D&R rule in LimaCharlie - `limacharlie/rules.yaml`
+* Add the D&R rules in LimaCharlie - `limacharlie/rules.yaml`
     * You can add these in the respective GUI locations, or via Infrastructure as Code
         * Infrastructure as Code [via Python CLI](https://github.com/refractionPOINT/python-limacharlie?tab=readme-ov-file#configs-1)
             ```bash
             limacharlie configs push --oid $OID --config /path/to/lcvr-to-timesketch/limacharlie/rules.yaml --hive-dr-general
             ```
         * Infrastructure as Code via GUI
-        ![](<./screenshots/Screenshot 2024-01-25 at 12.59.36 PM.png>)
-        * GUI locations
-        ![](<./screenshots/Screenshot 2024-01-19 at 3.41.26 PM.png>)
+        ![](<./screenshots/Screenshot 2024-03-06 at 10.12.17 AM.png>)
+        * GUI location - Automation --> D&R rules
+        ![](<./screenshots/Screenshot 2024-03-06 at 10.13.28 AM.png>)
 
 * Kick off `Windows.KapeFiles.Targets` artifact collection in the LimaCharlie Velociraptor extension. 
   * Argument options:
     * `EventLogs=Y` - quicker processing time for proof of concept
-    * `KapeTriage=Y` - typically takes much longer 
+    * `KapeTriage=Y` - typically takes longer because it collects more forensic data
 
   ![](<./screenshots/Screenshot 2024-01-22 at 2.57.34 PM.png>)
 
@@ -103,11 +116,11 @@ Pipeline to process LimaCharlie Velociraptor Triages in Timesketch
 
     ![](<./screenshots/Screenshot 2024-01-19 at 3.59.28 PM.png>)
 
-* You can see the data being sent through your output by clicking `View Samples` on the outputs screen
-    * This JSON is what is being sent to your webhook, and you can see what parts of it we are using in the `webhook/hooks.json` file
+* You can see the data being sent through your outputs by clicking `View Samples` on the outputs screen
+    * This JSON is what is being sent to your webhooks, and you can see what parts of it we are using in the `webhook/hooks.json` file
 
     ![](<./screenshots/Screenshot 2024-01-19 at 4.00.43 PM.png>)
 
-* If there are any errors sending data to your webhook, you will see them under `Platform Logs` -> `Error`
+* If there are any errors sending data to your webhooks, you will see them under `Platform Logs` -> `Error`
 * If you have Slack notifications enabled in the webhook service, you will get progress updates in Slack
-* Plaso files tend to take a while to generate--once the plaso file has been generated, it will begin importing into Timesketch. You will be able to see the import progress in the Timesketch GUI.
+* Plaso files tend to take a while to generate--once the plaso file has been generated (either within LimaCharlie or on your Timesketch server), it will begin importing into Timesketch. You will be able to see the import progress in the Timesketch GUI.

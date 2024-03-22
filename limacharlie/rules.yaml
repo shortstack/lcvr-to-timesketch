@@ -1,16 +1,121 @@
 version: 3
 hives:
     dr-general:
-        artifacts-to-output:
+        vr-to-hayabusa:
             data:
                 detect:
-                    op: is
-                    path: routing/log_type
+                    op: and
                     target: artifact_event
-                    value: velociraptor
+                    rules:
+                        - op: is
+                          path: routing/log_type
+                          value: velociraptor
+                        - op: is
+                          not: true
+                          path: routing/event_type
+                          value: export_complete
+                respond:
+                    - action: extension request
+                      extension action: generate
+                      extension name: ext-hayabusa
+                      extension request:
+                          artifact_id: '{{ .routing.log_id }}'
+                          artifact_type: '{{ "zip" }}'  
+                          send_to_timeline: false 
+            usr_mtd:
+                enabled: true
+                expiry: 0
+                tags: []
+        vr-to-plaso:
+            data:
+                detect:
+                    op: and
+                    target: artifact_event
+                    rules:
+                        - op: is
+                          path: routing/log_type
+                          value: velociraptor
+                        - op: is
+                          not: true
+                          path: routing/event_type
+                          value: export_complete
+                respond:
+                    - action: extension request
+                      extension action: generate
+                      extension name: ext-plaso
+                      extension request:
+                          artifact_id: '{{ .routing.log_id }}'
+                          artifact_type: '{{ "zip" }}'  
+            usr_mtd:
+                enabled: true
+                expiry: 0
+                tags: []
+        hayabusa-to-output:
+            data:
+                detect:
+                    event: hayabusa_artifact
+                    op: and
+                    rules:
+                        - op: is
+                          path: routing/event_type
+                          value: hayabusa_artifact
+                        - op: contains
+                          path: event/profile
+                          value: timesketch
                 respond:
                     - action: output
-                      name: artifacts-tailored
+                      name: hayabusa-artifacts-tailored
+                      suppression:
+                        is_global: false
+                        keys:
+                            - '{{ .event.artifact_id }}'
+                            - '{{ .routing.job_id }}'
+                        max_count: 1
+                        period: 1m
+                    - action: report
+                      name: Hayabusa artifact ingested
+            usr_mtd:
+                enabled: true
+                expiry: 0
+                tags: []
+        plaso-to-output:
+            data:
+                detect:
+                    event: plaso
+                    op: is
+                    path: routing/event_type
+                    value: plaso
+                respond:
+                    - action: output
+                      name: plaso-artifacts-tailored
+                      suppression:
+                        is_global: false
+                        keys:
+                            - '{{ .event.artifact_id }}'
+                            - '{{ .routing.job_id }}'
+                        max_count: 1
+                        period: 1m
+                    - action: report
+                      name: Plaso artifact ingested
+            usr_mtd:
+                enabled: true
+                expiry: 0
+                tags: []
+        vr-to-output:
+            data:
+                op: and
+                target: artifact_event
+                rules:
+                    - op: is
+                      path: routing/log_type
+                      value: velociraptor
+                    - op: is
+                      not: true
+                      path: routing/event_type
+                      value: export_complete
+                respond:
+                    - action: output
+                      name: vr-artifacts-tailored
                       suppression:
                         is_global: false
                         keys:

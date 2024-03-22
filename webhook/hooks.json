@@ -1,6 +1,6 @@
 [
     {
-      "id": "kick-off-timesketch",
+      "id": "triage-to-timesketch",
       "execute-command": "/opt/lcvr-to-timesketch/bash/run.sh",
       "command-working-directory": "/opt/lcvr-to-timesketch/bash",
       "pass-environment-to-command": [
@@ -20,6 +20,40 @@
           "name": "event.source"
         }
       ]
+    },
+    {
+      "id": "plaso-to-timesketch",
+      "execute-command": "/opt/lcvr-to-timesketch/bash/plaso_run.sh",
+      "command-working-directory": "/opt/lcvr-to-timesketch/bash",
+      "pass-environment-to-command": [
+        {
+          "envname": "OID",
+          "source": "payload",
+          "name": "routing.oid"
+        },
+        {
+          "envname": "PAYLOAD_ID",
+          "source": "payload",
+          "name": "event.artifact_id"
+        }
+      ]
+    },
+    {
+      "id": "hayabusa-to-timesketch",
+      "execute-command": "/opt/lcvr-to-timesketch/bash/hayabusa_run.sh",
+      "command-working-directory": "/opt/lcvr-to-timesketch/bash",
+      "pass-environment-to-command": [
+        {
+          "envname": "OID",
+          "source": "payload",
+          "name": "routing.oid"
+        },
+        {
+          "envname": "PAYLOAD_ID",
+          "source": "payload",
+          "name": "event.artifact_id"
+        }
+      ]
     }
-  ]
+]
   
