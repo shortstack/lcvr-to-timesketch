@@ -20,7 +20,6 @@ hives:
                       extension name: ext-hayabusa
                       extension request:
                           artifact_id: '{{ .routing.log_id }}'
-                          artifact_type: '{{ "zip" }}'  
                           send_to_timeline: false 
             usr_mtd:
                 enabled: true
@@ -45,7 +44,6 @@ hives:
                       extension name: ext-plaso
                       extension request:
                           artifact_id: '{{ .routing.log_id }}'
-                          artifact_type: '{{ "zip" }}'  
             usr_mtd:
                 enabled: true
                 expiry: 0

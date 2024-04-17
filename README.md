@@ -4,12 +4,12 @@ Pipeline to process a handful of IR timeline use cases:
     * Velociraptor artifacts trigger a webhook on your Timesketch server
     * Generating plaso files is done on your Timesketch server and subsequent plaso file is imported into your Timesketch server
 * LimaCharlie Hayabusa timeline artifacts into Timesketch
-    * Velociraptor triage artifacts OR .evtx files trigger the [`ext-hayabusa` extension](https://beta.app.limacharlie.io/add-ons/extension-detail/ext-hayabusa) in LimaCharlie to generate a CSV timeline 
+    * Velociraptor triage artifacts OR .evtx files trigger the [`ext-hayabusa` extension](https://app.limacharlie.io/add-ons/extension-detail/ext-hayabusa) in LimaCharlie to generate a CSV timeline 
     * CSV timeline artifact triggers a webhook on your Timesketch server
     * CSV timeline is imported into your Timesketch server
     * If you are using this option, you don't have to add or enable the `vr-to-output` D&R rule, or add the Plaso rules/outputs
 * LimaCharlie Plaso timeline artifacts into Timesketch
-    * Velociraptor triage artifacts OR .evtx files trigger the `ext-plaso` extension (coming soon) in LimaCharlie to generate a plaso timeline 
+    * Velociraptor triage artifacts OR .evtx files trigger the [`ext-plaso` extension](https://app.limacharlie.io/add-ons/extension-detail/ext-plaso) in LimaCharlie to generate a plaso timeline 
     * Plaso timeline artifact triggers a webhook on your Timesketch server
     * Plaso timeline is imported into your Timesketch server
     * If you are using this option, you don't have to add or enable the `vr-to-output` D&R rule, or add the Hayabusa rules/outputs
