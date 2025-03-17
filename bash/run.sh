@@ -53,7 +53,7 @@ if [ -d $PARENT_DATA_DIR/$SYSTEM/uploads ]; then
     fi
 
     # Run log2timeline and generate Plaso file
-    docker exec -i timesketch-worker /bin/bash -c "log2timeline.py --parser "!filestat" --status_view window --storage_file /usr/share/timesketch/upload/plaso/$SYSTEM.plaso /usr/share/timesketch/upload/$SYSTEM"
+    docker exec -i timesketch-worker /bin/bash -c "log2timeline.py --parsers '!filestat' --status_view window --storage_file /usr/share/timesketch/upload/plaso/$SYSTEM.plaso /usr/share/timesketch/upload/$SYSTEM"
 
     # Wait for file to become available
     sleep 40
